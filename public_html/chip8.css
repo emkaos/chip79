@@ -1,0 +1,29 @@
+#body {
+	background-color: #CCCCCC;
+}
+
+#outer {
+	width: 100%;
+}
+
+#inner {
+	width: 700px;
+	margin: 0 auto;
+}
+
+#screen {
+	border: 5px solid;
+	border-color: #AAAAAA
+}
+
+p {
+	font-family: "Courier New", Courier, monospace;
+}
+
+.low {
+	color: #999999;
+}
+
+.red {
+	color: red;
+}

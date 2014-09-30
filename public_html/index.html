@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Chip8</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="chip8.css" />
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="chip8.js"></script>
+
+	</head>
+	<body id="body">
+		<div id="outer">
+			<div id="inner">
+				<canvas id="screen" width="640" height="320"></canvas>
+				<script>
+					var canvas = document.getElementById('screen');
+					var chip8 = new Chip8(canvas);
+					//chip8.DEBUG = true;
+
+					var chip8keyDown = chip8.getKeyDownListener();
+					function keyDown(event) {
+						chip8keyDown(event);
+						$("#key"+event.keyCode).addClass('red');	
+					};
+
+					var chip8keyUp = chip8.getKeyUpListener();
+					function keyUp(keyCode) {
+						$("#key"+event.keyCode).removeClass('red');	
+					};
+
+					$(document).keydown(keyDown);
+					$(document).keyup(keyUp);
+					
+
+					function loadFiles(files) {
+
+						var f = files[0];
+						var reader = new FileReader();
+						reader.readAsArrayBuffer(f);
+						reader.onload = function(e) {
+							var buffer = reader.result;
+							var array = new Uint8Array(buffer);
+							chip8.reset();
+							chip8.load(array);
+							chip8.run();
+						};
+
+
+					}
+				</script>
+
+				<p id="keyboard">
+					Keyboard:<br>
++-----+-----+-----+-----+<br>
+| <span id="key49">1</span><span class="low">=1</span> | <span id="key50">2</span><span class="low">=2</span> | <span id="key51">3</span><span class="low">=3</span> | <span id="key52">C</span><span class="low">=4</span> |<br>
++-----------------------+<br>
+| <span id="key81">4</span><span class="low">=Q</span> | <span id="key87">5</span><span class="low">=W</span> | <span id="key69">6</span><span class="low">=E</span> | <span id="key82">D</span><span class="low">=R</span> |<br>
++-----------------------+<br>
+| <span id="key65">7</span><span class="low">=A</span> | <span id="key83">8</span><span class="low">=S</span> | <span id="key68">9</span><span class="low">=D</span> | <span id="key70">E</span><span class="low">=F</span> |<br>
++-----------------------+<br>
+| <span id="key90">A</span><span class="low">=Z</span> | <span id="key88">0</span><span class="low">=X</span> | <span id="key67">B</span><span class="low">=C</span> | <span id="key86">F</span><span class="low">=V</span> |<br>
++-----+-----+-----+-----+<br>
+
+				</p>
+				<p>
+					Load ROM: <input type="file" onchange="loadFiles(this.files)" />
+				</p>
+			</div>
+		</div>	
+	</body>
+</html>
