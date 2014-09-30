@@ -25,7 +25,8 @@
 					};
 
 					var chip8keyUp = chip8.getKeyUpListener();
-					function keyUp(keyCode) {
+					function keyUp(event) {
+						chip8keyUp(event);
 						$("#key"+event.keyCode).removeClass('red');	
 					};
 

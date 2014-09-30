@@ -48,6 +48,7 @@ Chip8.prototype.drawToCanvas = function() {
 			}
 		}
 	}
+	this.hasToDraw = false;
 };
 
 Chip8.prototype.mainLoop = function() {
@@ -68,6 +69,7 @@ Chip8.prototype.mainLoop = function() {
 							if (this.DEBUG) {
 								console.log("CLS");
 							}
+							this.hasToDraw = true;
 							break outer;
 				case 0x0EE: //RET
 							this.PC = this.stack.pop();
@@ -261,6 +263,7 @@ Chip8.prototype.mainLoop = function() {
 				console.log(this.V[y]);
 				console.log(this.memory.slice(this.I, this.I+n));
 			}
+			this.hasToDraw = true;
 			break;
 		case 0xE000: //
 			var l = (opcode & 0xFF);
@@ -268,9 +271,11 @@ Chip8.prototype.mainLoop = function() {
 			switch (l) {
 				case 0x9E: // SKP Vx
 					if (this.keyPressed[this.V[x]]) this.PC += 2;
+					console.log(this.keyPressed[this.V[x]]);
 					break outer;
 				case 0xA1: // SKNP Vx
 					if (!this.keyPressed[this.V[x]]) this.PC += 2;
+					console.log(!this.keyPressed[this.V[x]]);
 					break outer;
 			}
 			break;
@@ -340,17 +345,20 @@ Chip8.prototype.mainLoop = function() {
 			break;
 	}
 	this.PC += 2;
-	if (this.delayTimer) this.delayTimer--;
-	if (this.soundTimer) this.soundTimer--;
-	this.drawToCanvas();	
+	if (this.hasToDraw) {
+		this.drawToCanvas();	
+	}
 };
 
 Chip8.prototype.recurseLoop = function(timestamp) {
+	this.mainLoop();
+
 	if (isNaN(this.lastTimestamp)) {
 		this.lastTimestamp = timestamp;
 	}
-	if ((timestamp - this.lastTimestamp) > 30) {
-		this.mainLoop();
+	if ((timestamp - this.lastTimestamp) > 16) {
+		if (this.soundTimer) this.soundTimer--;
+		if (this.delayTimer) this.delayTimer--;
 		this.lastTimestamp = timestamp;
 	}
 
@@ -379,7 +387,7 @@ Chip8.prototype.getKeyUpListener = function() {
 	var chip = this;
 
 	return function(event) {
-		console.log("keydown" + chip.keyMapping[event.keyCode]);
+		console.log("keyup" + chip.keyMapping[event.keyCode]);
 		chip.keyPressed[chip.keyMapping[event.keyCode]] = false;	
 	};
 };
