@@ -357,7 +357,12 @@ Chip8.prototype.recurseLoop = function(timestamp) {
 		this.lastTimestamp = timestamp;
 	}
 	if ((timestamp - this.lastTimestamp) > 16) {
-		if (this.soundTimer) this.soundTimer--;
+		if (this.soundTimer)  { 
+			this.soundTimer--;
+			if (this.soundTimer === 0) {
+				new Audio("beep.wav").play();
+			}
+		}
 		if (this.delayTimer) this.delayTimer--;
 		this.lastTimestamp = timestamp;
 	}
